@@ -4,7 +4,7 @@ A QUIC implementation in C++11 coroutine. This project refer [quic-go](https://g
 # TODO List
 1. tls1.3 handshake
 2. session's life cycle and some class/struct reconstruction 
-3. API/function/frame optimze for send interval & cpu
+3. API/function/frame optimization for sending interval & cpu usage
 4. test
 
 # Done
