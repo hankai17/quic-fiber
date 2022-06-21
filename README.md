@@ -13,4 +13,4 @@ This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refe
 2. stream's life cycle
 3. user layer read/write/close
 4. drawing script for more info(recv/send data & congestion win & send ack & so on)
-  4.1 图片 ![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/congestion.png)
+  - ![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/congestion.png)
