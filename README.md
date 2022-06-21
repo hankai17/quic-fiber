@@ -1,5 +1,6 @@
 # quic-fiber
-A QUIC implementation in C++11 coroutine. This project refer [quic-go](https://github.com/lucas-clemente/quic-go)
+A QUIC implementation in C++11 coroutine. 
+This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refering [quic-go](https://github.com/lucas-clemente/quic-go)
 
 # TODO List
 1. tls1.3 handshake
