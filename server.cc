@@ -30,22 +30,13 @@ std::string to_hex(const std::string& str) {
 
 static void handle_session_stream(QuicStream::ptr stream) {
     int sum_size = 0;
-    //std::string g_buffer = "";
-    SYLAR_LOG_ERROR(g_logger) // << "accept session: " << session->getCid()
-            << ", accept stream_id: " << stream->stream_id();
+    SYLAR_LOG_ERROR(g_logger) << ", accept stream_id: " << stream->stream_id();
     while (1) {
         auto buffer_block = std::make_shared<sylar::MBuffer>();
         auto ret = stream->read(buffer_block, 1500);
         sum_size += ret->bytes_rw();
         //SYLAR_LOG_ERROR(g_logger) << "upper stream read ret: " << ret->bytes_rw()
         //            << ", sum_size: " << sum_size << ", err: " << ret->err_no();
-        /*
-        if (ret->bytes_rw() == 0 || ret->err_no() != 0) {
-            SYLAR_LOG_ERROR(g_logger) << "upper stream read ret: " << ret->bytes_rw() 
-                                      << ", sum_size: " << sum_size << ", err: " << ret->err_no();
-        }
-        */
-        //g_buffer = g_buffer + buffer_block->toString();
         if (ret->isCompleted()) {
             break;
         }
@@ -53,13 +44,6 @@ static void handle_session_stream(QuicStream::ptr stream) {
     stream->readStream()->cancelRead();
     SYLAR_LOG_ERROR(g_logger) << "stream read completed: " << sum_size;
     stream->close();
-	//std::string md5 = md5sum(g_buffer);
-    //std::string ret = to_hex(md5);
-    //SYLAR_LOG_ERROR(g_logger) << ret;
-    //if (ret != "07a46082ffc8ceb79231d7f09453cc52") {
-    //if (ret != "51238600a64b5464d8468f45c9f1afaf") {
-    //    //SYLAR_ASSERT(0);
-    //}
 }
 
 static void handle_session(QuicSession::ptr session) {
