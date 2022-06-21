@@ -11,4 +11,4 @@ A QUIC implementation in C++11 coroutine. This project refer [quic-go](https://g
 1. reliable & flow control & congestion control
 2. stream's life cycle
 3. user layer read/write/close
-4. drawing script for sending and receiving data
+4. drawing script for more info(recv/send data & congestion win & send ack & so on)
