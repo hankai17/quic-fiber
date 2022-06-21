@@ -95,16 +95,11 @@ void client_send_file(QuicServer::ptr server)
             SYLAR_LOG_ERROR(g_logger) << "ret: " << ret << ", write ret: " << res->bytes_rw() << ", error: " << res->err_no() << ", strerr: " << res->strerr();
         }
         sum += res->bytes_rw();
-        //SYLAR_LOG_ERROR(g_logger) << "sum: " << sum << ", remain size: " << size
-        //                          << ", write completed: " << res->isCompleted() << ", " << res->bytes_rw();
     }
     SYLAR_LOG_ERROR(g_logger) << "sum: " << sum << ", remain size: " << size;
     fclose(f);
-    //stream->writeStream()->cancelWrite();
     SYLAR_LOG_ERROR(g_logger) << stream->toSndStatisticsString();
     stream->close();
-    //client_session->closeSession();
-    //IOManager::GetThis()->addTimer(100, std::bind(&client_send_file, server), false);
 }
 
 void quic_server(int idx) {
@@ -119,7 +114,7 @@ void quic_server(int idx) {
 
 int main() {
     signal(SIGPIPE, SIG_IGN);
-    sylar::IOManager iom(2, false, "io"); // 设置为1 发送ack 有延迟
+    sylar::IOManager iom(2, false, "io");
     srand(time(0));
     generate_file();
     for (int i = 0; i < 1; i++) {
