@@ -1,16 +1,18 @@
 # quic-fiber
 A QUIC implementation in C++11 coroutine. 
-This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refering [quic-go](https://github.com/lucas-clemente/quic-go)
-
-# TODO List
-1. tls1.3 handshake
-2. session's life cycle and some class/struct reconstruction 
-3. API/function/frame optimization for sending interval & cpu usage
-4. test
+This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refering [quic-go](https://github.com/lucas-clemente/quic-go).
+This project is a toy version for verifying tcp transfer control etc. There is no license for this project. 
+If you have any questions or interest in this project, you are very welcome to submit issue and pr.
 
 # Done
-1. reliable & flow control & congestion control
-2. stream's life cycle
-3. user layer read/write/close
-4. drawing script for more info(recv/send data & congestion win & send ack & so on)
-  ![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/congestion.png)
+1. reliable and flow control and congestion control
+2. user layer read/write/close
+3. drawing script for more info
+
+# TODO
+1. TLS1.3 handshake
+2. session life cycle and some frame's func
+3. refactoring struct/class/API/func/frame
+4. tests
+
+![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/slow_start.PNG)
