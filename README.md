@@ -1,8 +1,8 @@
 # quic-fiber
   A QUIC implementation in C++11 coroutine. 
-This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refering [quic-go](https://github.com/lucas-clemente/quic-go).
-And this is a toy version for verifying tcp transfer control etc. There is no license for this project. 
-If you have any questions or interest in this project, you are very welcome to submit issue and pr.
+This project using [my_sylar](https://github.com/hankai17/my_sylar) lib and refering [quic-go](https://github.com/lucas-clemente/quic-go)
+and this is a toy version for verifying tcp transfer control etc. There is no license for this project. 
+If you have any questions or interest in this project, please submit issue and pr.
 
 # Done
 1. reliable and flow control and congestion control
