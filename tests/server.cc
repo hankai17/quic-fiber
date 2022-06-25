@@ -21,7 +21,7 @@ std::vector<QuicStream::ptr> g_streams;
 
 std::string to_hex(const std::string& str) {
     std::stringstream ss;
-    for(size_t i = 0; i < str.size(); ++i) {
+    for (size_t i = 0; i < str.size(); ++i) {
         ss << std::setw(2) << std::setfill('0') << std::hex
            << (int)(uint8_t)str[i];
     }
