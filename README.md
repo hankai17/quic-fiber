@@ -16,3 +16,5 @@ If you have any questions or interest in this project, please submit issue and p
 4. tests
 
 ![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/slow_start.PNG)
+![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/cubic.png)
+
