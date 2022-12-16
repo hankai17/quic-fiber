@@ -5,7 +5,7 @@ and this is a toy version for verifying tcp transfer control etc. There is no li
 If you have any questions or interest in this project, please submit issue and pr.
 
 # Done
-1. reliable and flow control and congestion control
+1. reliable, flow control, and congestion control(reno, cubic, BBR)
 2. user layer read/write/close
 3. drawing script for more info
 
@@ -15,6 +15,6 @@ If you have any questions or interest in this project, please submit issue and p
 3. refactoring struct/class/API/func/frame
 4. tests
 
-![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/slow_start.PNG)
+![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/reno.png)
 ![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/cubic.png)
 
