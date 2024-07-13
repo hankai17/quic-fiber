@@ -11,6 +11,7 @@
 #include "quic-fiber/quic_packet.hh"
 #include "quic-fiber/quic_utils.hh"
 #include "quic-fiber/quic_congestion.hh"
+#include "quic-fiber/quic/bbr/bbr_sender.hh"
 
 namespace sylar {
     namespace quic {
@@ -138,7 +139,7 @@ namespace sylar {
 
             bool queueProbePacket();
             void queueFramesForRetransmission(QuicPacket::ptr packet);
-            bool detectLostPackets(uint64_t now);
+            bool detectLostPackets(uint64_t now, std::vector<QuicPacket::ptr> &lost_packets);
             std::vector<QuicPacket::ptr> detectAndRemoveAckedPackets(QuicAckFrame::ptr frame);
             bool receivedAck(QuicAckFrame::ptr frame, uint64_t recv_time);
 
@@ -158,6 +159,7 @@ namespace sylar {
             std::vector<QuicPacket::ptr> m_acked_packets = {};
             uint64_t m_bytes_inflight = 0;
             SendAlgorithm::ptr m_congestion = nullptr;
+            uint64_t m_is_bbr = 0;
             RTTStats::ptr m_rtt_stats;
             uint32_t m_PTO_count = 0;
             // pto mode

@@ -97,12 +97,12 @@ namespace sylar {
                 public SendAlgorithm {
         public:
             typedef std::shared_ptr<CubicSender> ptr;
-            static constexpr uint64_t InitialMaxDatagramSize = 1252;
+            //static constexpr uint64_t InitialMaxDatagramSize = 1252;
             static constexpr uint64_t MaxBurstPackets = 3;
             static constexpr float RenoBeta = 0.7;
-            static constexpr uint64_t MaxCongestionWindowPackets = 10000;
+            //static constexpr uint64_t MaxCongestionWindowPackets = 10000;
             static constexpr uint64_t MinCongestionWindownPackets = 2;
-            static constexpr uint64_t InitialCongestionWindow = 32;
+            //static constexpr uint64_t InitialCongestionWindow = 32;
 
             CubicSender(uint64_t clock, RTTStats::ptr stats, bool reno,
                     uint64_t initial_max_datagram_size,

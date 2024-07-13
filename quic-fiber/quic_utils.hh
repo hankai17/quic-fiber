@@ -47,6 +47,8 @@ namespace sylar {
         static constexpr uint64_t MinPacingDelay = 1000;
         static constexpr uint64_t MaxBurstSizePackets = 10;
         static constexpr uint64_t InitialMaxDatagramSize = 1252;
+        static constexpr uint64_t InitialCongestionWindow = 32;
+        static constexpr uint64_t MaxCongestionWindowPackets = 10000;
 
         class Pacer {
         public:

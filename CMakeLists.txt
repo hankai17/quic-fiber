@@ -41,6 +41,8 @@ set(LIB_SRC
         quic-fiber/quic_server.cc
         quic-fiber/quic_congestion.cc
         quic-fiber/quic_flow_control.cc
+        quic-fiber/quic/bbr/bbr_utils.cc
+        quic-fiber/quic/bbr/bbr_sender.cc
         )
 
 add_library(${PROJECT_NAME} SHARED ${LIB_SRC})

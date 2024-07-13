@@ -318,7 +318,13 @@ namespace sylar {
         SentPacketHandler::SentPacketHandler(const RTTStats::ptr &rtt)
                 : m_rtt_stats(rtt) {
             m_data_packets.m_history = std::make_shared<SentPacketHistory>(m_rtt_stats);
-            m_congestion = std::make_shared<CubicSender>(GetCurrentUs(), rtt, true, 1452);
+            m_is_bbr = 1;
+            if (m_is_bbr) {
+                m_congestion = std::make_shared<BbrSender>(rtt, 1452);
+            } else {
+                m_congestion = std::make_shared<CubicSender>(GetCurrentUs(), rtt, false, 1452);
+            }
+
         }
 
         void SentPacketHandler::removeFromBytesInflight(QuicPacket::ptr packet) {
@@ -430,7 +436,7 @@ namespace sylar {
             packet->clear_frames(); // TODO how to release mem ?
         }
 
-        bool SentPacketHandler::detectLostPackets(uint64_t now) {
+        bool SentPacketHandler::detectLostPackets(uint64_t now, std::vector<QuicPacket::ptr> &lost_packets) {
             m_data_packets.m_loss_time = 0;
             float max_rtt = float(std::max(m_rtt_stats->latestRTT(), m_rtt_stats->smoothedRTT()));
             float loss_delay = max_rtt * timeThreshold;
@@ -461,12 +467,19 @@ namespace sylar {
                         << "loss_delay: " << loss_delay;
                 }
                 if (packet_lost) {
+                    if (m_is_bbr) {
+                        lost_packets.push_back(packet);
+                    }
+
                     SYLAR_LOG_INFO(g_logger) << "detectLostPackets: packet " << packet->packetNumber() 
                                              << " lost!, reason: " << reason << ", will retrans!!!";
                     packet->setLost();
                     removeFromBytesInflight(packet);
                     queueFramesForRetransmission(packet);
-                    m_congestion->onPacketLost(packet->packetNumber(), packet->len(), priori_inflight);
+                    if (!m_is_bbr) {
+                        m_congestion->onPacketLost(packet->packetNumber(), packet->len(), priori_inflight);
+                    }
+
                 }
                 return true; 
             });
@@ -546,19 +559,37 @@ namespace sylar {
                     m_congestion->maybeExitSlowStart();
                 }
             }
-            if (!detectLostPackets(recv_time)) {
+            std::vector<QuicPacket::ptr> lost_packets;
+            if (!detectLostPackets(recv_time, lost_packets)) {
                 SYLAR_LOG_INFO(g_logger) << "after detectLostPackets m_data_packets.m_loss_time:" << m_data_packets.m_loss_time;
                 return false;
             }
             SYLAR_LOG_DEBUG(g_logger) << "after detectLostPackets m_data_packets.m_loss_time:" << m_data_packets.m_loss_time;
+            std::vector<QuicPacket::ptr> acked_packets_for_event;
+            std::vector<QuicPacket::ptr> lost_packets_for_event;
             bool acked_1RTT_packet = false;
             for (const auto &packet : acked_packets) {
-                if (packet->includedInBytesInflight() && !packet->declaredLost()) {
-                    m_congestion->onPacketAcked(packet->packetNumber(), packet->len(), prior_inflight, recv_time);
+                if (packet->includedInBytesInflight()
+                        && !packet->declaredLost()) {
+                    if (m_is_bbr) {
+                        acked_packets_for_event.push_back(packet);
+                    } else {
+                        m_congestion->onPacketAcked(packet->packetNumber(), packet->len(), prior_inflight, recv_time);
+                    }
                 }
                 //SYLAR_LOG_INFO(g_logger) << "acked_packets.size: " << acked_packets.size() << ", infly: " << m_bytes_inflight;
                 removeFromBytesInflight(packet);
             }
+            if (m_is_bbr ) {
+                if (lost_packets.size()) {
+                    for (const auto & packet : lost_packets) {
+                        lost_packets_for_event.push_back(packet);
+                    }
+                 }
+                BbrSender::ptr bbr_cong = std::dynamic_pointer_cast<BbrSender>(m_congestion);
+                bbr_cong->onCongEvent(true, prior_inflight, bytesInflight(), recv_time, acked_packets_for_event, lost_packets_for_event, 0);
+            }
+
             m_PTO_count = 0;
             m_num_probes_to_send = 0;
             m_data_packets.m_history->deleteOldPackets(recv_time);
@@ -574,7 +605,15 @@ namespace sylar {
 
             uint64_t earliest_loss_time = m_data_packets.m_loss_time;
             if (earliest_loss_time) {
-                return detectLostPackets(GetCurrentUs());
+                std::vector<QuicPacket::ptr> lost_packets;
+                std::vector<QuicPacket::ptr> acked_packets;
+                uint64_t prior_inflight = bytesInflight();
+                bool ret = detectLostPackets(GetCurrentUs(), lost_packets);
+                if (m_is_bbr && lost_packets.size()) {
+                    BbrSender::ptr bbr_cong = std::dynamic_pointer_cast<BbrSender>(m_congestion);
+                    bbr_cong->onCongEvent(true, prior_inflight, bytesInflight(), GetCurrentUs(), acked_packets, lost_packets, 0);
+                }
+                return ret;
             }
             if (m_bytes_inflight == 0 && false) {
                 m_PTO_count++;
@@ -599,6 +638,7 @@ namespace sylar {
                 return PacketSendMode::PACKET_SEND_PTO_APP_DATA;
             }
             if (!m_congestion->canSend(m_bytes_inflight)) {
+                SYLAR_LOG_WARN(g_logger) << "sendMode: PACKET_SEND_ACK";
                 return PacketSendMode::PACKET_SEND_ACK;
             }
             return PacketSendMode::PACKET_SEND_ANY;
