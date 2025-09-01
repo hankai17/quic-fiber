@@ -8,13 +8,11 @@ If you have any questions or interest in this project, please submit issue and p
 1. reliable, flow control, and congestion control(reno, cubic, [BBR](https://github.com/hankai17/quic-fiber/tree/bbr))
 2. user layer read/write/close
 3. drawing script for more info
+![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/reno.png)
+![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/cubic.png)
 
 # TODO
 1. TLS1.3 handshake
 2. session life cycle and some frame's func
 3. refactoring struct/class/API/func/frame
 4. tests
-
-![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/reno.png)
-![congestion.png](https://github.com/hankai17/quic-fiber/blob/main/cubic.png)
-
