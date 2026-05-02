@@ -135,7 +135,7 @@ namespace sylar {
                 }
             }
         
-            if (end_in_gap && start != end_gap_end && end > end_gap_end) {
+            if (!end_in_gap && start != end_gap_end && end > end_gap_end) {
                 data->truncate(end_gap_end - start);
                 end = end_gap_end;
                 was_cut = true;
